@@ -1,0 +1,40 @@
+{
+  "name": "pimatic-dooya",
+  "version": "1.0.0",
+  "description": "Pimatic plugin to control motorized blinds equipped with Dooya tubular motors",
+  "main": "dooya.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codedealer/pimatic-dooya.git"
+  },
+  "files": [
+    "dooya.coffee",
+    "README.md",
+    "dooya-config-schema.coffee",
+    "device-config-schema.coffee"
+  ],
+  "configSchema": "dooya-config-schema.coffee",
+  "keywords": [
+    "pimatic",
+    "DC",
+    "motor",
+    "dooya",
+    "radio",
+    "akko"
+  ],
+  "peerDependencies": {
+    "pimatic": "0.9.*"
+  },
+  "dependencies": {
+    "rpio": "^0.9.20"
+  },
+  "author": "Thomas Mello",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codedealer/pimatic-dooya/issues"
+  },
+  "homepage": "https://github.com/codedealer/pimatic-dooya#readme"
+}

@@ -39,27 +39,27 @@ module.exports = (env) ->
 
     moveUp: () ->
       return new Promise (resolve, reject) =>
-        send(@cmd.wakeup, 3)
-        rpio.msleep(15)
-        send(@cmd.up, 3)
+        @send(@cmd.wakeup, 3)
+        rpio.msleep(@lut.DELAY)
+        @send(@cmd.up, 3)
         resolve()
 
     moveDown: () ->
       return new Promise (resolve, reject) =>
-        send(@cmd.wakedown, 3)
-        rpio.msleep(15)
-        send(@cmd.down, 3)
+        @send(@cmd.wakedown, 3)
+        rpio.msleep(@lut.DELAY)
+        @send(@cmd.down, 3)
         resolve()
 
     stop: () ->
       return new Promise (resolve, reject) =>
-        send(@cmd.stop, 3)
+        @send(@cmd.stop, 3)
         resolve()
 
     constructor: (@config, @plugin, @deviceConf) ->
       @id = @config.id
       @name = @config.name
-      @remoteId = @deviceConf.remoteId
+      @remoteId = @config.remoteId || @deviceConf.remoteId
       @pin = @plugin.config.pin
       # keep the state of the pin so that devices
       # do not hog the GPIO unnecesseraly
@@ -79,10 +79,12 @@ module.exports = (env) ->
         LSHORT: 415,
         HSHORT: 340,
         LLONG: 750,
-        HLONG: 685
+        HLONG: 685,
+        CMDDELAY: 9,
+        DELAY: 15
       }
 
-      rpio.open(@pin)
+      rpio.open(@pin, rpio.OUTPUT)
       rpio.usleep(10) #first call has lag
       @opened = true
 
@@ -93,8 +95,8 @@ module.exports = (env) ->
       @opened = false
       super()
 
-    _pulse: (bit) ->
-      level = if @remoteId & (1 << bit) then 1 else 0
+    _pulse: (cmd, bit) ->
+      level = cmd & (1 << bit)
       if level
         rpio.write(@pin, 1)
         rpio.usleep(@lut.HLONG)
@@ -108,7 +110,7 @@ module.exports = (env) ->
 
     send: (cmd, repeat) ->
       if not @opened
-        rpio.open(@pin)
+        rpio.open(@pin, rpio.OUTPUT)
         rpio.usleep(10) #first call has lag
 
       rpio.write(@pin, 1)
@@ -124,7 +126,9 @@ module.exports = (env) ->
 
       repeat--
 
-      @send(cmd, repeat) if repeat
+      if repeat
+        rpio.msleep(@lut.CMDDELAY)
+        @send(cmd, repeat)
 
   # ###Finally
   # Create a instance of my plugin

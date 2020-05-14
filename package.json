@@ -29,7 +29,10 @@
     "pimatic": "0.9.*"
   },
   "dependencies": {
-    "rpio": "^0.9.20"
+    "rpio": "^2.1.1"
+  },
+  "devDependencies": {
+    "pimatic": "^0.9.54"
   },
   "author": "Thomas Mello",
   "license": "MIT",

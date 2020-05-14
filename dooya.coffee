@@ -28,33 +28,7 @@ module.exports = (env) ->
         createCallback: (config) => new DooyaRemoteDevice(config, @, deviceConf.DooyaRemote)
       })
 
-  class DooyaRemoteDevice extends env.devices.Device
-    actions:
-      moveUp:
-        description: 'Roll curtains up'
-      moveDown:
-        description: 'Roll curtains down'
-      stop:
-        description: 'Stop curtains'
-
-    moveUp: () ->
-      return new Promise (resolve, reject) =>
-        @send(@cmd.wakeup, 3)
-        rpio.msleep(@lut.DELAY)
-        @send(@cmd.up, 3)
-        resolve()
-
-    moveDown: () ->
-      return new Promise (resolve, reject) =>
-        @send(@cmd.wakedown, 3)
-        rpio.msleep(@lut.DELAY)
-        @send(@cmd.down, 3)
-        resolve()
-
-    stop: () ->
-      return new Promise (resolve, reject) =>
-        @send(@cmd.stop, 3)
-        resolve()
+  class DooyaRemoteDevice extends env.devices.ShutterController
 
     constructor: (@config, @plugin, @deviceConf) ->
       @id = @config.id
@@ -89,6 +63,32 @@ module.exports = (env) ->
       @opened = true
 
       super()
+
+    moveToPosition: (position) ->
+      moveUp = () ->
+        return new Promise (resolve, reject) =>
+          @send(@cmd.wakeup, 3)
+          rpio.msleep(@lut.DELAY)
+          @send(@cmd.up, 3)
+          resolve()
+      moveDown = () ->
+      return new Promise (resolve, reject) =>
+        @send(@cmd.wakedown, 3)
+        rpio.msleep(@lut.DELAY)
+        @send(@cmd.down, 3)
+        resolve()
+
+      if position == 'up'
+        return moveUp()
+      else if position == 'down'
+        return moveDown()
+      else
+        throw new Error('unsupported position ' + position)
+
+    stop: () ->
+      return new Promise (resolve, reject) =>
+        @send(@cmd.stop, 3)
+        resolve()
 
     destroy: () ->
       rpio.close(@pin)

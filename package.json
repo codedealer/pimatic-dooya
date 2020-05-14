@@ -1,6 +1,6 @@
 {
   "name": "pimatic-dooya",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pimatic plugin to control motorized blinds equipped with Dooya tubular motors",
   "main": "dooya.coffee",
   "scripts": {
